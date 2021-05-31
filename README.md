@@ -10,9 +10,14 @@ The 0-9999 value is divided by 100 and rounded down to the 1 and put to the 3rd 
 ## BLE gateway
 Wiring between ENC28J60 ESP-WROOM-32D with reference to [ENC28J60を使ってESP32でEthernet UDP通信する](https://hikoleaf.hatenablog.jp/entry/2019/06/22/190914).
 
+As the following article wrote, the BLE library size is large and cannot co-exist with the WiFi library as default.
+To solve this issue, delete OTA space and enlarge the program space as the article wrote, sorry for Japanese article.
+- [https://ambidata.io/samples/m5stack/ble_gw/](https://ambidata.io/samples/m5stack/ble_gw/)
+
 <img src="img/IMG_0961.jpg" width="400">
 
 Modify WifiClient example in ESP-WROOM-32D library as `WiFiBLEClient.ino`.
+
 The code scans BLE advertised packets with a few seconds interval and get the above values from Manufacture data with the MAC address of a sensor device, and then sends the values to a syslog server.
 Syslog sendor setup is with reference to [Syslog](https://github.com/arcao/Syslog).
 
