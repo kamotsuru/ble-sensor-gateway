@@ -1,11 +1,12 @@
 # ble-sensor-gateway
 ## Sensor device
 Modify Peripheral/BatteryMonitor example in ArudiinoBLE library as `MyAdvertiser.ino`.
-As an evaluation, the analogue input to A0 pin with 0-1023 is mapped to 0-9999 and turn on an LED attached to 7 pin in proportion to the value.
+As an evaluation, ~~the analogue input to A0 pin with 0-1023 is mapped to 0-9999~~ the Bus voltage of INA219 is monitored and turn on an LED attached to 7 pin in proportion to the value.
+INA219 library is installed with reference to [Arduino Code | Adafruit INA219 Current Sensor Breakout](https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout/arduino-code).
 
-<img src="img/IMG_0962.jpg" width="400"><img src="img/IMG_0963.png" width="400">
+<img src="img/IMG_0997.jpg" width="400"><img src="img/ScreenShot2021-06-17at1358.jpg" width="400">
 
-The 0-9999 value is divided by 100 and rounded down to the 1 and put to the 3rd byte in the Manufacturer data in BLE advertised packet, and the residual is put to the 4th byte. The adevertised packet with the values in Manufacturer data is periodically sent. 
+The ~~0-9999 value is divided by 100 and~~ Bus voltage is rounded down to the 1 and put to the 3rd byte in the Manufacturer data in BLE advertised packet, and the residual is put to the 4th byte. The current is put as same. The adevertised packet with the values in Manufacturer data is periodically sent.
 
 ## BLE gateway
 Wiring between ENC28J60 ESP-WROOM-32D with reference to [ENC28J60を使ってESP32でEthernet UDP通信する](https://hikoleaf.hatenablog.jp/entry/2019/06/22/190914).
