@@ -100,8 +100,8 @@ void loop() {
 //  if(Serial)  
 //    Serial.printf("a0 Level is now: %f\n", a0Level/100.0);  
 
-  if (a0Level != oldA0Level) {      // if the battery level has changed
-    oldA0Level = a0Level;           // save the level for next comparison
+//  if (a0Level != oldA0Level) {      // if the battery level has changed
+//    oldA0Level = a0Level;           // save the level for next comparison
     
     BLE.stopAdvertise();
     data[2] = 0x01; // sensor id
@@ -119,7 +119,7 @@ void loop() {
       Serial.printf("a0 Level is now: %d.%02d\n", (int)data[3], (int)data[4]);
     BLE.setManufacturerData(data, DATA_SIZE);
     BLE.advertise();
-  }
+//  }
   
   delay(random(2000,3000));
 }
