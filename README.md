@@ -2,7 +2,9 @@
 ## Sensor device
 Modify Peripheral/BatteryMonitor example in ArudiinoBLE library as `MyAdvertiser.ino`.
 As an evaluation, the analogue input from SCT-013-100 to A0 pin with 0-1023 is mapped to 0-3300 mV and turn on an LED attached to 7 pin in proportion to the value. It's ranged between 1.20-4.02V under my environment as the following figure, and translated into the original AC current value according to [CT Sensors - Interfacing with an Arduino](https://learn.openenergymonitor.org/electricity-monitoring/ct-sensors/interface-with-arduino).
+
 AC current = (A0 value - 5.22V\*461kΩ/(459kΩ+461kΩ))/20Ω\*2000turn/√2
+
 The Bus voltage of INA219 is also monitored. INA219 library is installed with reference to [Arduino Code | Adafruit INA219 Current Sensor Breakout](https://learn.adafruit.com/adafruit-ina219-current-sensor-breakout/arduino-code).
 
 <img src="img/IMG_1182.jpg" width="400"><img src="img/ScreenShot2021-12-08at1654.jpg" width="400">
@@ -46,7 +48,7 @@ May  9 17:01:30 esp32 X??? ﻿15:45:05:42:da:6c 1 67.339996 67.339996
 ```
 
 ## receive syslog
-A syslog server receives the values as below. Currently we send three measured data.
+A syslog server receives the values as below. Currently, we send three measured data.
 
 
 ```
