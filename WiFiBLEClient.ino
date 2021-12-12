@@ -96,7 +96,7 @@ void setup() {
 void loop() {
   bool found = false;
   int manufacturerId, id;
-  float current, voltage;
+  float current, busvoltage, current_mA;
 
   if (Serial.available() > 0) {
     String str = Serial.readStringUntil('\n');
@@ -132,10 +132,17 @@ void loop() {
         found = true;
         id = (int)data[2];
         current = (float)data[3] + (float)data[4]/100.0;
-        voltage = (float)data[5] + (float)data[6]/100.0;
+	if (current > 128)
+	  current = current - 256.0;
+        busvoltage = (float)data[5] + (float)data[6]/100.0;
+	if (busvoltage > 128)
+	  busvoltage = busvoltage - 256.0;
+        current_mA = (float)data[7] + (float)data[8]/100.0;
+	if (current_mA > 128)
+	  current_mA = current_mA - 256.0;
         if(Serial)
-	  Serial.printf("%s %d %f %f\n", d.getAddress().toString().c_str(), id, current, voltage);	
-        syslog.logf(LOG_INFO, "%s %d %f %f", d.getAddress().toString().c_str(), id, current, voltage);
+	  Serial.printf("%s %d %f %f %f\n", d.getAddress().toString().c_str(), id, current, busvoltage, current_mA);	
+        syslog.logf(LOG_INFO, "%s %d %f %f %f", d.getAddress().toString().c_str(), id, current, busvoltage, current_mA);
       }
     }
   }
