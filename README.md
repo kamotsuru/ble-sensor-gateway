@@ -1,7 +1,7 @@
 # ble-sensor-gateway
 ## Sensor device
 Modify Peripheral/BatteryMonitor example in ArudiinoBLE library as `MyAdvertiser.ino`.
-As an evaluation, the analogue input from SCT-013-100 to A0 pin with 0-1023 is mapped to 0-3300 mV and turn on an LED attached to 7 pin in proportion to the value. It's ranged between 1.20-4.02V under my environment as the following figure, and translated into the original AC current value according to [CT Sensors - Interfacing with an Arduino](https://learn.openenergymonitor.org/electricity-monitoring/ct-sensors/interface-with-arduino).
+As an evaluation, the analogue input from SCT-013-100 to A0 pin with 0-1023 is mapped to 0-3300 mV and turn on an LED attached to 7 pin in proportion to the value. It's ranged between 1.20-4.02V under my environment as the following figure, and translated into the original AC current value according to [NON-INVASIVE SENSOR: YHDC SCT013-000 CT USED WITH ARDUINO. (SCT-013)](https://www.poweruc.pl/blogs/news/non-invasive-sensor-yhdc-sct013-000-ct-used-with-arduino-sct-013).
 
 AC current = (A0 value - 5.22V\*461kΩ/(459kΩ+461kΩ))/20Ω\*2000turn/√2
 
