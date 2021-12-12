@@ -72,19 +72,16 @@ void loop() {
   /* Read the current voltage level on the A0 analog input pin.
      This is used here to simulate the charge level of a battery.
   */
-//  int a0val = analogRead(A0);
-//  int a0Level = map(a0val, 0, 1023, 0, 9999);
-  float shuntvoltage = 0;
-  float busvoltage = 0;
-  float current_mA = 0;
-  float loadvoltage = 0;
-  float power_mW = 0;  
-
-  shuntvoltage = ina219.getShuntVoltage_mV();
-  busvoltage = ina219.getBusVoltage_V();
-  current_mA = ina219.getCurrent_mA();
-  power_mW = ina219.getPower_mW();
-  loadvoltage = busvoltage + (shuntvoltage / 1000);
+  int a0val = analogRead(A0);
+  int a0Level = map(a0val, 0, 1023, 0, 3300);
+  int a0val = analogRead(A0);
+  int a0Level = map(a0val, 0, 1023, 0, 3300);
+  float shuntvoltage = ina219.getShuntVoltage_mV();
+  float busvoltage = ina219.getBusVoltage_V();
+  float current_mA = ina219.getCurrent_mA();
+  float loadvoltage = busvoltage + (shuntvoltage / 1000);
+  float power_mW = ina219.getPower_mW();
+  float current_A = ((float)a0Level/1000.0 - 2.61567)*70.71; // 5.22*461/(459+461), 1/20.0*2000.0/1.4142
 
   if(Serial) {
     Serial.print("Bus Voltage:   "); Serial.print(busvoltage); Serial.println(" V");
@@ -95,31 +92,31 @@ void loop() {
     Serial.println("");
   }
   
-//  analogWrite(LED, (int)map(a0Level, 0, 9999, 0, 255));
-  analogWrite(LED, (int)map(busvoltage, 0, 32, 0, 255));
-//  if(Serial)  
-//    Serial.printf("a0 Level is now: %f\n", a0Level/100.0);  
+  analogWrite(LED, (int)map(a0Level, 0, 3300, 0, 255));
+//  analogWrite(LED, (int)map(busvoltage, 0, 32, 0, 255));
+  if(Serial) {
+    Serial.printf("a0 Level is now: %f\n", a0Level/1000.0);    
+  }
 
-//  if (a0Level != oldA0Level) {      // if the battery level has changed
-//    oldA0Level = a0Level;           // save the level for next comparison
+  if (a0Level != oldA0Level) {      // if the battery level has changed
+    oldA0Level = a0Level;           // save the level for next comparison
     
     BLE.stopAdvertise();
     data[2] = 0x01; // sensor id
-//    data[3] = (byte)floorf(a0Level/100.0); //current before decimal point
-//    data[4] = (byte)(a0Level%100); //current after decimal point
-//    data[5] = (byte)floorf(a0Level/100.0); //voltage before decimal point
-//    data[6] = (byte)(a0Level%100); //voltage after decimal point
     int val = floorf(current_mA); //current before decimal point
-    data[3] = (byte)val;
-    data[4] = (byte)floorf((current_mA - (float)val)/100.0); //current after decimal point
+    data[7] = (byte)val;
+    data[8] = (byte)floorf((current_mA - (float)val)*100.0); //current after decimal point
     val = floorf(busvoltage); //voltage before decimal point
-    data[5] = (byte)val
-    data[6] = (byte)floorf((busvoltage - (float)val)/100.0); //voltage after decimal point
+    data[3] = (byte)val;
+    data[4] = (byte)floorf((busvoltage - (float)val)*100.0); //voltage after decimal point
+    val = floorf(current_A);
+    data[5] = (byte)val;
+    data[6] = (byte)floorf((current_A - (float)val)*100.0);
     if(Serial)      
-      Serial.printf("a0 Level is now: %d.%02d\n", (int)data[3], (int)data[4]);
+      Serial.printf("data: %d.%02d, %d.%02d, %d.%02d\n", (int)data[3], (int)data[4], (int)data[5], (int)data[6], (int)data[7], (int)data[8]);
     BLE.setManufacturerData(data, DATA_SIZE);
     BLE.advertise();
-//  }
+  }
   
   delay(random(2000,3000));
 }
