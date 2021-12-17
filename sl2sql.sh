@@ -14,24 +14,28 @@ dbfile="/home/pi/sl2sql.sqlite3"
 
 cmd_sqlite3="/usr/bin/sqlite3"
 
+flag=0
+
+#file=$1
+file="/var/log/messages"
+
 #create db if the above db file doesn't exist
 if [ ! -f ${dbfile} ]; then
   echo "${dbfile} doesn't exist!"
   ${cmd_sqlite3} ${dbfile} "CREATE TABLE sens_data (id INTEGER PRIMARY KEY AUTOINCREMENT, device VARCHAR(64), sensId INTEGER, current REAL, busvoltage REAL, current_mA REAL, timestamp TEXT, updated_at TEXT DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime')));"  
+  flag=1
 else
   echo "${dbfile} exists!"
+  #最後に登録したデータを取得
+  ex_data=`${cmd_sqlite3} ${dbfile} "SELECT max(id), timestamp FROM sens_data;"` 
+  ex_timestamp=`echo $ex_data | cut -d '|' -f 2`
 fi
-
-#file=$1
-file="/var/log/messages"
 
 #get the latest sensor data timestamp in the db
 ex_data=`${cmd_sqlite3} ${dbfile} "SELECT max(id), timestamp FROM sens_data;"` 
 ex_timestamp=`echo $ex_data | cut -d '|' -f 2`
 
 #read syslog file line by line
-flag=0
-
 while read line
 do
     app=`echo ${line} | awk '{print $4}'`
@@ -61,7 +65,7 @@ do
 #    echo $current   
 #    echo $busvoltage   
 #    echo $timestamp   
-    if [ `date -d"${ex_timestamp}" +%s` -lt `date -d"${timestamp}" +%s` ]; then
+    if [ $flag -eq 1 ] || [ `date -d"${ex_timestamp}" +%s` -lt `date -d"${timestamp}" +%s` ]; then
         flag=1
     fi
 #insert sensor data
